@@ -1,0 +1,572 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<title>일정현황</title>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/schedule/schedule.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/jqwidgets/styles/jqx.base.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/jqwidgets/styles/jqx.custom.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/jqwidgets/styles/jqx.orange.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/jqwidgets/styles/jqx.darkblue.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/jqwidgets/styles/jqx.metro.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/jqwidgets/styles/jqx.metrodark.css" type="text/css" />
+
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/scripts/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxcore.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxexpander.js"></script> 
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxdata.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxbuttons.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxswitchbutton.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxscrollbar.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxlistbox.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxdropdownlist.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxmenu.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxtooltip.js"></script>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxgrid.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxgrid.pager.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxgrid.sort.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxgrid.filter.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxgrid.selection.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxgrid.columnsresize.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxgrid.selection.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxtabs.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxfileupload.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxtree.js"></script>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxinput.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxformattedinput.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxnumberinput.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxwindow.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxdropdownlist.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxpanel.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxcalendar.js"></script> 
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxdatetimeinput.js"></script> 
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxmaskedinput.js"></script> 
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxsplitter.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxnotification.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/jqxcheckbox.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/globalization/globalize.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/jqwidgets/globalization/globalize.culture.ko-KR.js"></script>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/commontoolbar.js"></script>
+
+<script type="text/javascript">
+
+	var nowPage = 0;
+	var pageSize = '${PAGE_SIZE}';
+
+	var today = '${TODAY}';
+	var prevDay = '${PREV_DAY}';
+	var nowDay = '${NOW_DAY}';
+	var nextDay = '${NEXT_DAY}';
+	
+	var onlyMine = 'Y';
+	var onlyLabelArr = new Array();
+	
+	var theme = 'default';
+
+
+
+	function loadSchedule(viewDay) {
+		console.log('viewDay-->'+viewDay);
+		var day = nowDay;
+		var sendNowPage = nowPage;
+		if(viewDay == 'prevDay') {
+			day = prevDay;
+		} else if(viewDay == 'nextDay') {
+			day = nextDay;
+		} else if(viewDay == 'prevPage') {
+			sendNowPage = nowPage - 1;
+		} else if(viewDay == 'nextPage') {
+			sendNowPage = nowPage + 1;
+		} else if(viewDay == 'today') {
+			day = today;
+			nowPage = 0;
+			sendNowPage = 0;
+		} else if(viewDay != null) {
+			day = viewDay;
+			nowPage = 0;
+			sendNowPage = 0;
+		} else {
+			day = today;
+			nowPage = 0;
+			sendNowPage = 0;
+		}
+		console.log('viewDay='+viewDay+', day='+day+', sendNowPage='+sendNowPage+', nowday='+day);
+
+		sendDataSchedule.nowPageKey = day;
+		sendDataSchedule.nowPage = sendNowPage;
+		sendDataSchedule.pageSize = pageSize;
+		sendDataSchedule.onlyMine = onlyMine;
+		sendDataSchedule.onlyLabel = onlyLabelArr.toString();
+		new $.jqx.dataAdapter(scheduleListSource, {
+			autoBind: true,
+			loadComplete: function (data) {
+		
+			var scheduleList = data['scheduleList'];
+			prevDay = data['PREV_DAY'];
+			nowDay = data['NOW_DAY'];
+			nextDay = data['NEXT_DAY'];
+			
+			nowPage = data['NOW_PAGE'];
+				
+			var scheduleListHtml = '';
+			
+			var beforeStartDay = '';
+			var scheduleList = data['scheduleList'];
+			
+			/* 현재 일정이 존재 하지 않을때 */
+			if(scheduleList == '' || scheduleList == null){
+				var displayer = '';
+				
+				displayer += 
+					'<tr>' +
+						'<td colspan="3" height="100%" align="center">' +
+							'<br><br><font size="5"> 현재 일정이 존재하지 않습니다.</font>' +
+							'<br><br><br>' + 
+							'<img src="/resources/image/calendar.png">' +
+							'<br><br>●<br><br>●<br><br>●'
+						'</td>' +
+					'<tr>';
+				scheduleListHtml += displayer;
+			} else {		/* 현재 일정이 존재 할때 */
+				$.each(scheduleList, function(i,schedule){
+					//console.log( schedule['startDay']+'----->'+);
+					
+					var displayer = '';
+
+					var startDay = schedule['startDay'];
+					var date = new Date(schedule['startDay']);
+					var year = date.getFullYear() + '년';
+					var month = date.getMonth() + 1;
+					var monthDay = month + '월' + date.getDate() + '일';
+					var scheduleLabel = schedule['label'];
+					
+					if(startDay != beforeStartDay) {
+						displayer += 
+						'<tr>'+
+						'<td width="150" align="center" colspan="2">' + 
+							'<font size="4">' + year + monthDay + '</font>' + 
+						'</td>';
+						beforeStartDay = startDay;
+					} else {
+						displayer += '<td colspan="2"></td>';
+					}
+					displayer += 
+							'<td> '+
+								'<table width="100%" border="0"><tr><td align="left" width="15%">' +
+								'<div><font size="4">'+schedule['startHourmin']+'~'+schedule['endHourmin']+'</font>'+
+								'</td><td align="left">' +
+								'<p onclick="detailToggle('+"'"+startDay+'_'+schedule['seqId']+"'"+')" style="cursor: pointer;" id="listmouse"><img id="img' +startDay+'_'+schedule['seqId']+'" src="../resources/image/plus.png"><b>[' + schedule['labelLabel'] + '/' + schedule['userIdLabel'] + ']</b>&nbsp;&nbsp;&nbsp;'+ schedule['subject']+'</p></div>'+
+								'</td></tr></table>' +
+								'</td>'+
+						'</tr>'+
+						'<tr><td colspan="3"><hr color="#F5F5F5"></td></tr>' +
+						'<tr id="detail'+startDay+'_'+schedule.seqId+'" style="display: none;">'+
+							'<td colspan="2"></td>'+
+							'<td class="box2">'+
+								'<table>' +
+									'<tr>' +
+										'<td class="title">' + '장소 :' + '</td>' +
+										'<td><b>' + schedule['location'] + '</b></td>' +
+									'</tr>' +
+										'<td class="title">' + '시작종료일시 :' + '</td>' +
+										'<td><b>' + schedule['startTime'] + '~' + schedule['endTime'] + '</b></td>' +
+									'</tr>' +
+									'<tr>' +
+										'<td class="title">' + '메모 :' + '</td>' +
+										'<td><b>' + schedule['description'] + '</b></td>' +
+									'</tr>' +
+								'</table>' +
+								'<hr color="#F6F6F6">';
+								if(schedule['endTime'] > today){
+									displayer += '<p align="right" style=" cursor: pointer;" onclick="scheduleDetail('+schedule['seqId']+')" id="listmouse"><b>수정하기</b>&nbsp;&nbsp;<img id="listmouse" src="../resources/image/zoom-in.png"></p>';
+								}
+								if(scheduleLabel == 1){
+									displayer += '<p align="right" style=" cursor: pointer;" onclick="maintenDetail('+ schedule['contactInfo'] +')" id="listmouse"><b>기술지원보기</b>&nbsp;&nbsp;<img id="listmouse" src="../resources/image/zoom-in.png"></p>';
+								}
+								displayer +=
+									'</td></tr><tr><td></td></tr>';
+					scheduleListHtml += displayer;
+				});
+			}
+			
+			
+			$('#scheduleListHtml').html(scheduleListHtml);
+			}
+		});
+	}
+
+	function chkLabel(label, checked) {
+
+		console.log(checked+'=====>'+label);
+		if(checked) {
+			onlyLabelArr.push(label);
+		} else {
+			onlyLabelArr = jQuery.grep(onlyLabelArr, function(value) {
+												return value != label;
+											});
+		}
+		console.log(label+'=====>'+onlyLabelArr);
+		loadSchedule();
+	}
+
+	//세부사항 토글
+	function detailToggle(seqId) {
+ 		console.log('------seqId--------->'+seqId);
+		if ($('#detail'+seqId).css('display') == 'none') {
+			$('#img' + seqId).attr('src', '${pageContext.request.contextPath}/resources/image/minus.png');
+			$('#detail'+seqId).css('display','');
+		} else {
+			$('#img' + seqId).attr('src', '${pageContext.request.contextPath}/resources/image/plus.png');
+			$('#detail'+seqId).css('display','none');
+		}
+
+		//$("#detail"+seqId).slideToggle("slow");
+	}
+
+	//세부정보 클릭
+	function scheduleDetail(seqId){
+			var getUrl = "${pageContext.request.contextPath}/schedule/getDetail.do?seqId=" + seqId;
+			document.getElementById('scheduleDetail').innerHTML= '<iframe style="border:none;" src="' + getUrl + '" width="100%" height="700"></iframe>';
+			$('#scheduleSplitter').jqxSplitter({panels: [{size:'50%', collapsible: false}, {collapsible: false}] });
+	 		$("#scheduleNotification").jqxNotification("closeAll");
+	}
+	
+	//기술지원 클릭
+		function maintenDetail(seqId){
+			var getUrl = "${pageContext.request.contextPath}/maintentask/getReqDetail.do?seqId=" + seqId + '&x_vGroupId=TM';
+			document.getElementById('scheduleDetail').innerHTML= '<iframe style="border:none;" src="' + getUrl + '" width="100%" height="900"></iframe>';
+			$('#scheduleSplitter').jqxSplitter({panels: [{size:'40%', collapsible: false}, {collapsible: false}] });
+	 		$("#scheduleNotification").jqxNotification("closeAll");
+	}
+	
+		//세부정보 닫기
+	function detailClose(){
+		$('#scheduleSplitter').jqxSplitter({panels: [{size:'100%', collapsible: false}, {collapsible: false}] });
+	}
+
+	//윈도우창 닫기
+	function jqxwindow_Close() {
+		$('#jqxwindow').jqxWindow("close");
+		location.reload();
+	}
+
+	// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+	$(document).ready(function () {
+		//일정관리 화면 크기
+		$("#scheduleDisplay").css('height', $(window).height()-150);
+		//전체 슬라이드
+		$("#slideToolbarArrow").click(function(){
+			if ($('#slideToolbar').css('display') === 'none') {
+			    $('img', this).attr('src', '${pageContext.request.contextPath}/resources/image/slidearrowup.png');
+			} else {
+			    $('img', this).attr('src', '${pageContext.request.contextPath}/resources/image/slidearrow.png');
+			}
+			$("#slideToolbar").slideToggle("slow");
+		});
+		
+		//달력 슬라이드
+		$("#slideCal").click(function(){
+			if ($('#calendarView').css('display') === 'none') {
+				$('img', this).attr('src', '${pageContext.request.contextPath}/resources/image/slidearrowup.png');
+			} else {
+				$('img', this).attr('src', '${pageContext.request.contextPath}/resources/image/slidearrow.png');
+			}
+			$("#calendarView").slideToggle("slow");
+		});
+		//라벨 슬라이스
+		$("#slideLabel").click(function(){
+			if ($('#viewLabel').css('display') === 'none') {
+				$('img', this).attr('src', '${pageContext.request.contextPath}/resources/image/slidearrowup.png');
+			} else {
+				$('img', this).attr('src', '${pageContext.request.contextPath}/resources/image/slidearrow.png');
+			}
+			$("#viewLabel").slideToggle("slow");
+		});
+		//테마 슬라이스
+		$("#slideTheme").click(function(){
+			if ($('#viewTheme').css('display') === 'none') {
+				$('img', this).attr('src', '${pageContext.request.contextPath}/resources/image/slidearrowup.png');
+			} else {
+				$('img', this).attr('src', '${pageContext.request.contextPath}/resources/image/slidearrow.png');
+			}
+			$("#viewTheme").slideToggle("slow");
+		});
+		
+		//구성도
+		var data = [
+		<c:forEach var="organ" items="${organList}">
+		{
+			"department": "${organ.department}",
+			"seqId": "${organ.seqId}",
+			"parentId": "${organ.parentId}"
+		},
+		</c:forEach>
+		] 
+		
+	 	// prepare the data
+		var organSource =
+		{
+			datatype: "json",
+			expanded: true,
+			datafields: [
+				{ name: 'seqId'},
+				{ name: 'parentId' },
+				{ name: 'department' }
+			],
+			id: 'id',
+			localdata: data
+		};
+			
+		var dataAdapter = new $.jqx.dataAdapter(organSource);
+		dataAdapter.dataBind();
+		var records = dataAdapter.getRecordsHierarchy('seqId', 'parentId', 'items', [{ name: 'department', map: 'label'}]);
+		$('#treeMember').jqxTree({ source: records, width: '300px',theme: 'custom'});
+		
+		var jq = $('#treeMemberPosition');
+		var position = jq.offset();
+		var x = position.top;
+		var y = position.left;
+		
+		// 조직도 표시
+		$("#memberWindow").jqxWindow({
+			position: { x: x + 30 , y: y + 140 },
+			maxWidth: 300,
+			theme: 'custom',
+			maxHeight: 300,
+			height: '300',
+			width: '300',
+			autoOpen: false
+		});
+		
+		//구성원 트리리스트
+		$("#treeMemberButton").jqxButton({ theme: 'custom' });
+		
+		$("#treeMemberButton").click(function() {
+			$("#memberWindow").jqxWindow('open');
+			var items = $("#treeMember").jqxTree('getItems');
+			var item = items[0];
+			
+			$("#treeMember").jqxTree('expandItem', item);
+		});
+		
+
+		//window 오픈
+		$("#jqxwindow").jqxWindow({
+			maxWidth: 1000,
+			maxHeight: 1000,
+			theme: 'custom',
+			height: '700',
+			width: '900',
+			theme: 'energyblue',
+			autoOpen: false
+		});
+		
+		
+		//달력
+		$("#scheduleCal").jqxCalendar({ width: '100%', height: '100%',theme: 'custom' });
+		$('#scheduleCal').on('change', function (event) {
+			var date = event.args.date;
+			var clickDay = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+			console.log('clickDay='+clickDay);
+			loadSchedule(clickDay);
+		});
+		
+		$("#btnNew").jqxButton({ template: "info",theme: 'custom' });
+		$("#btnNowDay").jqxButton({ template: "info",theme: 'custom' });
+		$("#btnPrevDay").jqxButton({ template: "default",theme: 'custom' });
+		$("#btnNextDay").jqxButton({ template: "default",theme: 'custom' });
+		$("#btnPrevPage").jqxButton({ template: "default",theme: 'custom' });
+		$("#btnNextPage").jqxButton({ template: "default",theme: 'custom' });
+		
+		$('#btnMySchedule').jqxSwitchButton({ height: 20, width: 60, checked: true, theme: 'custom' });
+		$('#btnMySchedule').on('change', function (event) {
+			console.log('btnMySchedule---->'+event.args.checked);
+			if(event.args.checked) {
+				onlyMine = 'Y';
+			} else {
+				onlyMine = 'N';
+			}
+			loadSchedule();
+		});
+		
+		var wheight = $(window).height();
+		//스플리터
+		$('#scheduleSplitter').jqxSplitter({theme: 'custom', width:'100%', height: wheight, panels: [{size:'100%', collapsible: false}, {collapsible: false}] });
+	    
+		$("#scheduleListTd").click(function() {
+			$('#scheduleSplitter').jqxSplitter({panels: [{size:'50%', collapsible: false}, {collapsible: false}] });
+		}); 
+		
+		$("#btnNew").click(function () {
+			//$("#jqxwindow").jqxWindow('open');
+			//$("#jqxwindow").jqxWindow('setContent', '<iframe src="${pageContext.request.contextPath}/schedule/getNew.do" width="100%" height="100%"></iframe>');
+
+			var getUrl = "${pageContext.request.contextPath}/schedule/getNew.do";
+			document.getElementById('scheduleDetail').innerHTML= '<iframe style="border:none;" src="' + getUrl + '" width="100%" height="700"></iframe>';
+			$('#scheduleSplitter').jqxSplitter({panels: [{size:'45%', collapsible: false}, {collapsible: false}] });
+			
+			
+		});
+		//테마 변경 모드
+		$("#modes").jqxDropDownList({theme: 'custom', width: 150, autoDropDownHeight: true, selectedIndex: 0, height: 25, source: ['Default', 'Orange', 'Custom', 'Dark Blue', 'Metro', 'Metro Dark'] });
+	
+		$("#modes").on('select', function (event) {
+			if (event.args.index === 0) {
+				$("#New").jqxButton({ theme: 'default' });
+			}
+			else if(event.args.index === 1) {
+				$("#New").jqxButton({ theme: 'orange' });
+			}
+			else if(event.args.index === 2){
+				$("#New").jqxButton({ theme: 'custom' });
+			}
+			else if(event.args.index === 3){
+				$("#New").jqxButton({ theme: 'darkblue' });
+			}
+			else if(event.args.index === 4){
+				$("#New").jqxButton({ theme: 'metro' });
+			}
+			else if(event.args.index === 5){
+				$("#New").jqxButton({ theme: 'metrodark' });
+			}
+		});
+		
+		// 달력 변경
+		loadSchedule();
+		
+		//체크박스
+		//chkLabel(label, checked);
+		
+	});//End ready
+	
+	
+	
+	var sendDataSchedule = new Object();
+	var scheduleListSource =
+	{
+		datatype: "json",
+		datafields: [
+			{ name: 'userLabel', type: 'string' },
+			{ name: 'seqId', type: 'int' },
+			{ name: 'organizationId', type: 'int' }
+		],
+		id: 'scheduleList',
+		data: sendDataSchedule,
+		url: "${pageContext.request.contextPath}/schedule/getListByJson",
+		type: "POST",
+		async: true
+	};
+
+</script>
+</head>
+<body class='default'>
+
+	
+	<div id="memberWindow">
+		<div id="windowHeader">
+			<span> 구성도 </span>
+		</div>
+		<div style="overflow: hidden;" id="windowContent">
+			<div id='treeMember'></div>
+		</div>
+	</div>
+	<!-- 탑 메뉴 -->
+	<div id='content'>
+		<div id='jqxWidget'>
+			<!-- new Window창 -->
+			<div id='jqxwindow'>
+				<!-- 윈도우 제목 -->
+			<div id="customWindowHeader">
+				<span id="captureContainer" style="float: left">NewTask </span>
+			</div>
+			</div>
+				<table id="scheduleDiaplay" width="100%">
+					<tr>
+						<td valign="top" width="10.5%">
+							<div id="slideToolbarArrow" align="right" style='cursor: pointer; '>
+									<img src="${pageContext.request.contextPath}/resources/image/slidearrowup.png" height="15">
+							</div>
+							<div id="slideToolbar">
+								<div id="slideCal" style='cursor: pointer; '>
+									<img src="${pageContext.request.contextPath}/resources/image/slidearrowup.png" height="10">미니 캘린더
+								</div>
+								<br>
+								<div id="calendarView">
+									<div id="scheduleCal"></div>
+								</div>
+								<p id="treeMemberPosition">
+									<input type="button" style="cursor: pointer;" id="treeMemberButton" value="팀 구성도">
+								</p>
+								<br>
+								<div>
+									<table width="100%" >
+										<tr>
+											<td>▣ 내일정</td>
+											<td align="right"><div id="btnMySchedule"></div></td>
+										</tr>
+									</table>
+								</div>
+								<br>
+								<div id="slideLabel" style='cursor: pointer;'>
+									▣ 일정범주&nbsp;&nbsp;<img src="${pageContext.request.contextPath}/resources/image/slidearrow.png" height="10">
+								</div>
+								<div id="viewLabel" style="display: none;">
+								<c:forEach var="row" items="${labelCodeList}">
+									<div><input type="checkbox" onclick="chkLabel(${row.code},this.checked)" id="check${row.code}">
+									<label style="cursor: pointer;" for="check${row.code}" id="listmouse" >${row.codeName}</label>
+									</div>
+								</c:forEach>
+								</div>
+								<br>
+								<div id="slideTheme" style='cursor: pointer;'>
+									▣ 테마설정&nbsp;&nbsp;<img src="${pageContext.request.contextPath}/resources/image/slidearrow.png" height="10">
+								</div>
+								<!-- 테마 선택 -->
+							<div align="center" id="viewTheme" style="display: none;">
+								<div id="modes"></div>
+							</div>
+						</div>
+						</td>
+						<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+						<td width="88%">
+						<!-- 스플리터 -->
+						<div id="scheduleSplitter">
+						<div style="overflow-x: auto; overflow-y: auto;" id="slideBar" >
+							<!-- 일정목록 -->
+							<input type="button" style="cursor: pointer;" id="btnNew" value="신규" onclick="loadSchedule('today')" />
+							<input type="button" style="cursor: pointer;" id="btnNowDay" value="오늘" onclick="loadSchedule('today')" />
+							<input type="button" style="cursor: pointer;" id="btnPrevDay" value="&lt;" onclick="loadSchedule('prevDay')" />
+							<input type="button" style="cursor: pointer;" id="btnNextDay" value="&gt;" onclick="loadSchedule('nextDay')" />
+							<input type="button" style="cursor: pointer;" id="btnPrevPage" value="&lt;&lt;" onclick="loadSchedule('prevPage')" />
+							<input type="button" style="cursor: pointer;" id="btnNextPage" value="&gt;&gt;" onclick="loadSchedule('nextPage')" />
+							<table width="100%" class="backgroundNew" border="0">
+								<tr>
+									<td colspan="3"><hr color="white" size=""></td>
+								</tr>
+								<tbody id="scheduleListHtml"></tbody>
+							</table>
+						</div>
+						<div id="ContentPanel">
+							
+							<!-- 일정상세 -->
+							<div id="scheduleDetail"></div>
+						</div>
+					</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+			<!-- jqxwidget -->
+		</div>
+		<!-- content -->
+</body>
+</html>
